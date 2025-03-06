@@ -161,12 +161,17 @@ class DirectoryContents
 
             $filePath = $dir . '/' . $file;
             $permissions = fileperms($filePath);
+            if (is_dir($filePath)) {
+                $is_directory = 'YES';
+            } else {
+                $is_directory = 'NO';
+            }
 
             $result[] = [
                 'name' => $file,
                 'path' => $filePath,
                 'permissions' => DirectoryContents::getPermissions($permissions),
-                'is_dir' => is_dir($filePath),
+                'Is Directory' => $is_directory,
                 'File Owner' => DirectoryContents::getFileOwnerName($filePath),
             ];
         }
@@ -227,13 +232,13 @@ class DirectoryContents
         $ownerId = fileowner($filename);
 
         if ($ownerId === false) {
-            return false; 
+            return false;
         }
 
         $ownerInfo = posix_getpwuid($ownerId);
 
         if ($ownerInfo === false) {
-            return false; 
+            return false;
         }
 
         return $ownerInfo['name'];
