@@ -8,7 +8,7 @@ class CommandExecutor
 
     public static function execute($input)
     {
-        $parts = explode(" ", $input);
+        $parts =  explode(" ", $input);
         $command = strtolower(trim($parts[0]));
         $args = array_slice($parts, 1);
 
