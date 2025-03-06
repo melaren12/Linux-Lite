@@ -167,10 +167,11 @@ class DirectoryContents
                 'path' => $filePath,
                 'permissions' => DirectoryContents::getPermissions($permissions),
                 'is_dir' => is_dir($filePath),
+                'File Owner' => DirectoryContents::getFileOwnerName($filePath),
             ];
         }
 
-        return $result;
+        return var_export($result, true);
     }
     public static function getPermissions($permissions)
     {
@@ -219,5 +220,22 @@ class DirectoryContents
             (($permissions & 0x0200) ? 't' : 'x') : (($permissions & 0x0200) ? 'T' : '-'));
 
         return $info;
+    }
+
+    public static function getFileOwnerName($filename)
+    {
+        $ownerId = fileowner($filename);
+
+        if ($ownerId === false) {
+            return false; 
+        }
+
+        $ownerInfo = posix_getpwuid($ownerId);
+
+        if ($ownerInfo === false) {
+            return false; 
+        }
+
+        return $ownerInfo['name'];
     }
 }
