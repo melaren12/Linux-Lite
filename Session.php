@@ -19,6 +19,7 @@ class SessionManager
         $new_path = realpath($_SESSION['current_dir'] . '/' . $dir);
         if ($new_path && is_dir($new_path)) {
             $_SESSION['current_dir'] = $new_path;
+           
             return "Directory changed to: " . $_SESSION['current_dir'];
         }
         return "Directory not found";
