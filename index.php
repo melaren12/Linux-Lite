@@ -1,7 +1,9 @@
 <?php
+
 require_once "Session.php";
 require_once "Command.php";
 
+session_set_cookie_params(0);
 SessionManager::start();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

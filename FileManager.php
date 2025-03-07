@@ -140,8 +140,28 @@ class FileManager
         return "File not found";
     }
 
-    public static function changePermissions() {}
-    public static function changeOwner() {}
+    public static function changePermissions($file_name, $code)
+    {
+        $perm_code = '0' . $code;
+        $file_path = SessionManager::getCurrentDir() . '/' . $file_name;
+        if (file_exists($file_path)) {
+            return chmod($file_path, $perm_code);
+        }
+        return "File not found";
+    }
+
+    public static function changeOwner($username, $file_name)
+    {
+        $file_path = SessionManager::getCurrentDir() . '/' . $file_name;
+
+        $command = 'sudo chown ' . escapeshellarg($username) . ' ' . escapeshellarg($file_path);
+        $output = shell_exec($command);
+
+        if ($output === null) {
+            return "Failed to execute command.";
+        }
+        return $output;
+    }
 }
 
 class DirectoryContents
@@ -149,6 +169,7 @@ class DirectoryContents
     public static function contentsPermissions($dir)
     {
         $files = scandir($dir);
+
         if ($files === false) {
             return false;
         }
@@ -161,6 +182,7 @@ class DirectoryContents
 
             $filePath = $dir . '/' . $file;
             $permissions = fileperms($filePath);
+
             if (is_dir($filePath)) {
                 $is_directory = 'YES';
             } else {

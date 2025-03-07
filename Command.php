@@ -67,7 +67,7 @@ class CommandExecutor
                 }
             case 'chown':
                 if (isset($parts[1]) && isset($parts[2])) {
-                    return FileManager::changeOwner(SessionManager::getCurrentDir() . '/' . $parts[1], $parts[2]);
+                    return FileManager::changeOwner($parts[1], $parts[2]);
                 }
             default:
                 return "Unknown command!";
