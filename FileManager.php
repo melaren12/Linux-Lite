@@ -146,7 +146,7 @@ class FileManager
 
 class DirectoryContents
 {
-    public static function contentsWithPermissions($dir)
+    public static function contentsPermissions($dir)
     {
         $files = scandir($dir);
         if ($files === false) {

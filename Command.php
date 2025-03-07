@@ -17,7 +17,7 @@ class CommandExecutor
                 return SessionManager::getCurrentDir();
             case 'ls':
                 if (isset($parts[1]) && $parts[1] == '-l') {
-                    return  DirectoryContents::contentsWithPermissions(SessionManager::getCurrentDir());
+                    return  DirectoryContents::contentsPermissions(SessionManager::getCurrentDir());
                 }
                 return FileManager::runLs($parts[0]);
             case 'cat':
