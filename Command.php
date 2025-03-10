@@ -1,76 +1,108 @@
 <?php
 
 require_once "Session.php";
-require_once "FileManager.php";
+require_once "DirectoryPermissions.php";
+require_once "DirectoryManager.php";
+require_once "FileSystemManager.php";
+require_once "SystemInfoManager.php";
+require_once "DirectoryManager.php";
 
 class CommandExecutor
 {
-
     public static function execute($input)
     {
         $parts = explode(" ", $input);
         $command = strtolower(trim($parts[0]));
         $args = array_slice($parts, 1);
 
-        switch ($command) {
-            case 'pwd':
-                return SessionManager::getCurrentDir();
-            case 'ls':
-                if (isset($parts[1]) && $parts[1] == '-l') {
-                    return  DirectoryContents::contentsPermissions(SessionManager::getCurrentDir());
-                }
-                return FileManager::runLs($parts[0]);
-            case 'cat':
-                return isset($parts[1]) ? FileManager::runCat($parts[1]) : "Specify file!";
-            case 'whoami':
-                return FileManager::runWhoami();
-            case 'date':
-                return FileManager::runDate();
-            case 'uname':
-                return FileManager::runUname();
-            case 'df':
-                return FileManager::runDf();
-            case 'free':
-                return FileManager::runFree();
-            case 'cd':
-                return isset($parts[1]) ? FileManager::runCd($parts[1]) : "Specify file!";
-            case 'mkdir':
-                return isset($parts[1]) ? FileManager::runMkdir($parts[1]) : "Specify file!";
-            case 'touch':
-                return isset($parts[1]) ? FileManager::runTouch($parts[1]) : "Specify file!";
-            case '~':
-                return FileManager::runParent();
-            case 'file':
-                return isset($parts[1]) ? FileManager::runFile($parts[1]) : "Specify file!";
-            case 'cp':
-                if (isset($parts[1]) && isset($parts[2])) {
-                    return FileManager::runCp($parts[1], $parts[2]);
-                }
-                return "Specify file!";
-            case 'mv':
-                return count($args) == 2 ? FileManager::runMv($args[0], $args[1]) : "Specify files!";
-            case 'rm':
-                if (isset($parts[1])) {
-                    return FileManager::runRm(SessionManager::getCurrentDir() . '/' . $parts[1]);
-                }
-                return "Specify file!";
-            case 'cat>':
-                $newArray = array_slice($parts, 2);
-                if (isset($parts[1]) && isset($parts[2]) && !empty($newArray)) {
-                    $data = implode(" ", $newArray);
-                    return FileManager::runWrite($parts[1], $data);
-                }
-                return "Specify file or text";
-            case 'chmod':
-                if (isset($parts[1]) && isset($parts[2])) {
-                    return FileManager::changePermissions($parts[1], $parts[2]);
-                }
-            case 'chown':
-                if (isset($parts[1]) && isset($parts[2])) {
-                    return FileManager::changeOwner($parts[1], $parts[2]);
-                }
-            default:
+        function executeCommand($command, $parts, $args)
+        {
+            $commands = [
+                'pwd' => function () {
+                    return SessionManager::getCurrentDir();
+                },
+                'ls' => function () use ($parts) {
+                    if (isset($parts[1]) && $parts[1] == '-l') {
+                        return DirectoryContents::contentsPermissions(SessionManager::getCurrentDir());
+                    }
+                    return FileSystemManager::listFiles($parts[0]);
+                },
+                'cat' => function () use ($parts) {
+                    return isset($parts[1]) ? FileSystemManager::readFileContents($parts[1]) : "Specify file!";
+                },
+                'whoami' => function () {
+                    return SystemInfoManager::getCurrentUser();
+                },
+                'date' => function () {
+                    return SystemInfoManager::getCurrentDateTime();
+                },
+                'uname' => function () {
+                    return SystemInfoManager::getSystemInformation();
+                },
+                'df' => function () {
+                    return SystemInfoManager::getDiskSpace();
+                },
+                'free' => function () {
+                    return SystemInfoManager::getMemoryUsage();
+                },
+                'cd' => function () use ($parts) {
+                    return isset($parts[1]) ? DirectoryManager::changeDirectory($parts[1]) : "Specify file!";
+                },
+                'mkdir' => function () use ($parts) {
+                    return isset($parts[1]) ? FileSystemManager::createDirectory($parts[1]) : "Specify file!";
+                },
+                'touch' => function () use ($parts) {
+                    return isset($parts[1]) ? FileSystemManager::createFile($parts[1]) : "Specify file!";
+                },
+                '~' => function () {
+                    return DirectoryManager::navigateToParentDirectory();
+                },
+                'file' => function () use ($parts) {
+                    return isset($parts[1]) ? FileSystemManager::getFileType($parts[1]) : "Specify file!";
+                },
+                'cp' => function () use ($parts) {
+                    if (isset($parts[1]) && isset($parts[2])) {
+                        return FileSystemManager::copyFile($parts[1], $parts[2]);
+                    }
+                    return "Specify file!";
+                },
+                'mv' => function () use ($args) {
+                    return count($args) == 2 ? FileSystemManager::renameFile($args[0], $args[1]) : "Specify files!";
+                },
+                'rm' => function () use ($parts) {
+                    if (isset($parts[1])) {
+                        return DirectoryManager::removeDirectory(SessionManager::getCurrentDir() . '/' . $parts[1]);
+                    }
+                    return "Specify file!";
+                },
+                'cat>' => function () use ($parts) {
+                    $newArray = array_slice($parts, 2);
+                    if (isset($parts[1]) && isset($parts[2]) && !empty($newArray)) {
+                        $data = implode(" ", $newArray);
+                        return FileSystemManager::writeFileContents($parts[1], $data);
+                    }
+                    return "Specify file or text";
+                },
+                'chmod' => function () use ($parts) {
+                    if (isset($parts[1]) && isset($parts[2])) {
+                        return FileSystemManager::setFilePermissions($parts[1], $parts[2]);
+                    }
+                    return "Specify file and mode";
+                },
+                'chown' => function () use ($parts) {
+                    if (isset($parts[1]) && isset($parts[2])) {
+                        return FileSystemManager::setFileOwner($parts[1], $parts[2]);
+                    }
+                    return "Specify file and owner";
+                },
+            ];
+
+            if (isset($commands[$command])) {
+                return $commands[$command]();
+            } else {
                 return "Unknown command!";
+            }
         }
+        return executeCommand($command, $parts, $args);
     }
 }
