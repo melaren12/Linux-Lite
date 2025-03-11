@@ -1,7 +1,9 @@
 <?php
 
-require_once "Session.php";
-require_once "Command.php";
+require_once "vendor/autoload.php"; 
+
+use App\SessionManager;
+use App\CommandExecutor;
 
 session_set_cookie_params(0);
 SessionManager::start();
