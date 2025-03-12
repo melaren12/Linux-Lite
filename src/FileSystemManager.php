@@ -10,7 +10,6 @@ class FileSystemManager
 
         return empty($files) ? "Directory is empty" : implode("\n", $files);
     }
-
     public static function readFileContents($file_name)
     {
         $new_path = SessionManager::getCurrentDir() . '/' . $file_name;
@@ -26,10 +25,8 @@ class FileSystemManager
 
             return "File created successfully!";
         }
-
         return "File already exists!";
     }
-
     public static function createDirectory($file_name) :string
     {
         $new_path = SessionManager::getCurrentDir() . '/' . $file_name;
@@ -41,7 +38,6 @@ class FileSystemManager
             return "The Given file path already exists";
         }
     }
-
     public static function copyFile($source, $destination) :string
     {
         if (!file_exists($destination)) {
@@ -53,10 +49,8 @@ class FileSystemManager
 
             return "File Copied!";
         }
-
         return "It is not file!";
     }
-
     public static function renameFile($old_name, $new_name) :string
     {
         if (file_exists($old_name)) {
@@ -64,10 +58,8 @@ class FileSystemManager
 
             return "File renamed succesfuly";
         }
-
         return "File not found";
     }
-
     public static function writeFileContents($file_name, $data) :string
     {
         $new_path = SessionManager::getCurrentDir() . '/' . $file_name;
@@ -79,10 +71,8 @@ class FileSystemManager
 
             return "The text is written to the file.";
         }
-
         return "File not found";
     }
-
     public static function setFilePermissions($file_name, $code)
     {
         $perm_code = '0' . $code;
@@ -90,10 +80,8 @@ class FileSystemManager
         if (file_exists($file_path)) {
             return chmod($file_path, $perm_code);
         }
-
         return "File not found";
     }
-
     public static function setFileOwner($username, $file_name)
     {
         $file_path = SessionManager::getCurrentDir() . '/' . $file_name;
@@ -104,7 +92,6 @@ class FileSystemManager
         if ($output === null) {
             return "Failed to execute command.";
         }
-
         return $output;
     }
 
@@ -114,7 +101,6 @@ class FileSystemManager
         if (file_exists($new_path)) {
             return filetype($new_path);
         }
-
         return "File not found";
     }
 }

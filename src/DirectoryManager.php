@@ -19,12 +19,10 @@ class DirectoryManager
 
         return "Directory not found";
     }
-
     public static function navigateToParentDirectory()
     {
         return $_SESSION['current_dir'] = getcwd();
     }
-
     public static function removeDirectory($dir) :string
     {
         $files = array_diff(scandir($dir), ['.', '..']);

@@ -35,7 +35,6 @@ class DirectoryContents
                 'File Owner' => DirectoryContents::getFileOwnerName($filePath),
             ];
         }
-
         return var_export($result, true);
     }
     public static function getPermissions($permissions) :string
@@ -84,7 +83,6 @@ class DirectoryContents
 
         return $info;
     }
-
     public static function getFileOwnerName($filename)
     {
         $ownerId = fileowner($filename);
@@ -98,7 +96,6 @@ class DirectoryContents
         if ($ownerInfo === false) {
             return false;
         }
-
         return $ownerInfo['name'];
     }
 }
