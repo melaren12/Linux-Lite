@@ -4,13 +4,13 @@ namespace App;
 
 class CommandExecutor
 {
-    public static function execute($input)
+    public static function execute($input) :string
     {
         $parts = explode(" ", $input);
         $command = strtolower(trim($parts[0]));
         $args = array_slice($parts, 1);
 
-        function executeCommand($command, $parts, $args)
+        function executeCommand($command, $parts, $args) :string
         {
             $commands = [
                 'pwd' => function () {
@@ -20,7 +20,7 @@ class CommandExecutor
                     if (isset($parts[1]) && $parts[1] == '-l') {
                         return DirectoryContents::contentsPermissions(SessionManager::getCurrentDir());
                     }
-                    return FileSystemManager::listFiles($parts[0]);
+                    return FileSystemManager::listFiles();
                 },
                 'cat' => function () use ($parts) {
                     return isset($parts[1]) ? FileSystemManager::readFileContents($parts[1]) : "Specify file!";
