@@ -38,31 +38,29 @@ class DirectoryContents
 
         return var_export($result, true);
     }
-    public static function getPermissions($permissions)
+    public static function getPermissions($permissions) :string
     {
         if (($permissions & 0xC000) == 0xC000) {
-            // Socket
             $info = 's';
         } elseif (($permissions & 0xA000) == 0xA000) {
-            // Symbolic Link
             $info = 'l';
-        } elseif (($permissions & 0x8000) == 0x8000) {
-            // Regular
+        }
+        elseif (($permissions & 0x8000) == 0x8000) {
             $info = '-';
-        } elseif (($permissions & 0x6000) == 0x6000) {
-            // Block special
+        }
+        elseif (($permissions & 0x6000) == 0x6000) {
             $info = 'b';
-        } elseif (($permissions & 0x4000) == 0x4000) {
-            // Directory
+        }
+        elseif (($permissions & 0x4000) == 0x4000) {
             $info = 'd';
-        } elseif (($permissions & 0x2000) == 0x2000) {
-            // Character special
+        }
+        elseif (($permissions & 0x2000) == 0x2000) {
             $info = 'c';
-        } elseif (($permissions & 0x1000) == 0x1000) {
-            // FIFO pipe
+        }
+        elseif (($permissions & 0x1000) == 0x1000) {
             $info = 'p';
-        } else {
-            // Unknown
+        }
+        else {
             $info = 'u';
         }
 
