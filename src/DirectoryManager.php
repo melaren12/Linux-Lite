@@ -36,7 +36,9 @@ class DirectoryManager
             }
         }
 
-        rmdir($dir);
+        if (!rmdir($dir)) {
+            return "Failed to delete directory: $dir";
+        }
         return "Directory deleted!";
     }
 }

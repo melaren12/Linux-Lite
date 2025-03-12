@@ -6,6 +6,11 @@ class CommandExecutor
 {
     public static function execute($input) :string
     {
+        $input = trim($input);
+        if (preg_match('/[;|&`]/', $input)) {
+            return "Invalid characters in command!";
+        }
+
         $parts = explode(" ", $input);
         $command = strtolower(trim($parts[0]));
         $args = array_slice($parts, 1);

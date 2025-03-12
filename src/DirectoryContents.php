@@ -4,6 +4,29 @@ namespace App;
 
 class DirectoryContents
 {
+    const TYPE_SOCKET = 0xC000;
+    const TYPE_LINK = 0xA000;
+    const TYPE_REGULAR = 0x8000;
+    const TYPE_BLOCK = 0x6000;
+    const TYPE_DIRECTORY = 0x4000;
+    const TYPE_CHAR = 0x2000;
+    const TYPE_FIFO = 0x1000;
+
+    const PERM_OWNER_READ = 0x0100;
+    const PERM_OWNER_WRITE = 0x0080;
+    const PERM_OWNER_EXEC = 0x0040;
+    const PERM_SETUID = 0x0800;
+
+    const PERM_GROUP_READ = 0x0020;
+    const PERM_GROUP_WRITE = 0x0010;
+    const PERM_GROUP_EXEC = 0x0008;
+    const PERM_SETGID = 0x0400;
+
+    const PERM_WORLD_READ = 0x0004;
+    const PERM_WORLD_WRITE = 0x0002;
+    const PERM_WORLD_EXEC = 0x0001;
+    const PERM_STICKY = 0x0200;
+
     public static function contentsPermissions($dir)
     {
         $files = scandir($dir);
@@ -37,49 +60,47 @@ class DirectoryContents
         }
         return var_export($result, true);
     }
-    public static function getPermissions($permissions) :string
+    public static function getPermissions($permissions): string
     {
-        if (($permissions & 0xC000) == 0xC000) {
+        // Тип файла
+        if (($permissions & self::TYPE_SOCKET) == self::TYPE_SOCKET) {
             $info = 's';
-        } elseif (($permissions & 0xA000) == 0xA000) {
+        } elseif (($permissions & self::TYPE_LINK) == self::TYPE_LINK) {
             $info = 'l';
-        }
-        elseif (($permissions & 0x8000) == 0x8000) {
+        } elseif (($permissions & self::TYPE_REGULAR) == self::TYPE_REGULAR) {
             $info = '-';
-        }
-        elseif (($permissions & 0x6000) == 0x6000) {
+        } elseif (($permissions & self::TYPE_BLOCK) == self::TYPE_BLOCK) {
             $info = 'b';
-        }
-        elseif (($permissions & 0x4000) == 0x4000) {
+        } elseif (($permissions & self::TYPE_DIRECTORY) == self::TYPE_DIRECTORY) {
             $info = 'd';
-        }
-        elseif (($permissions & 0x2000) == 0x2000) {
+        } elseif (($permissions & self::TYPE_CHAR) == self::TYPE_CHAR) {
             $info = 'c';
-        }
-        elseif (($permissions & 0x1000) == 0x1000) {
+        } elseif (($permissions & self::TYPE_FIFO) == self::TYPE_FIFO) {
             $info = 'p';
-        }
-        else {
+        } else {
             $info = 'u';
         }
 
-        // Owner
-        $info .= (($permissions & 0x0100) ? 'r' : '-');
-        $info .= (($permissions & 0x0080) ? 'w' : '-');
-        $info .= (($permissions & 0x0040) ?
-            (($permissions & 0x0800) ? 's' : 'x') : (($permissions & 0x0800) ? 'S' : '-'));
+        // Владелец (Owner)
+        $info .= (($permissions & self::PERM_OWNER_READ) ? 'r' : '-');
+        $info .= (($permissions & self::PERM_OWNER_WRITE) ? 'w' : '-');
+        $info .= (($permissions & self::PERM_OWNER_EXEC) ?
+            (($permissions & self::PERM_SETUID) ? 's' : 'x') :
+            (($permissions & self::PERM_SETUID) ? 'S' : '-'));
 
-        // Group
-        $info .= (($permissions & 0x0020) ? 'r' : '-');
-        $info .= (($permissions & 0x0010) ? 'w' : '-');
-        $info .= (($permissions & 0x0008) ?
-            (($permissions & 0x0400) ? 's' : 'x') : (($permissions & 0x0400) ? 'S' : '-'));
+        // Группа (Group)
+        $info .= (($permissions & self::PERM_GROUP_READ) ? 'r' : '-');
+        $info .= (($permissions & self::PERM_GROUP_WRITE) ? 'w' : '-');
+        $info .= (($permissions & self::PERM_GROUP_EXEC) ?
+            (($permissions & self::PERM_SETGID) ? 's' : 'x') :
+            (($permissions & self::PERM_SETGID) ? 'S' : '-'));
 
-        // World
-        $info .= (($permissions & 0x0004) ? 'r' : '-');
-        $info .= (($permissions & 0x0002) ? 'w' : '-');
-        $info .= (($permissions & 0x0001) ?
-            (($permissions & 0x0200) ? 't' : 'x') : (($permissions & 0x0200) ? 'T' : '-'));
+        // Остальные (World)
+        $info .= (($permissions & self::PERM_WORLD_READ) ? 'r' : '-');
+        $info .= (($permissions & self::PERM_WORLD_WRITE) ? 'w' : '-');
+        $info .= (($permissions & self::PERM_WORLD_EXEC) ?
+            (($permissions & self::PERM_STICKY) ? 't' : 'x') :
+            (($permissions & self::PERM_STICKY) ? 'T' : '-'));
 
         return $info;
     }
