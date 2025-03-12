@@ -8,6 +8,7 @@ use App\DirectoryContents;
 use App\FileSystemManager;
 use App\SystemInfoManager;
 use App\DirectoryManager;
+use App\SessionManager;
 
 class CommandExecutor
 {
