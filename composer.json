@@ -13,6 +13,7 @@
     }
   ],
   "require": {
-    "monolog/monolog": "^3.8"
+    "monolog/monolog": "^3.8",
+    "ext-posix": "*"
   }
 }
