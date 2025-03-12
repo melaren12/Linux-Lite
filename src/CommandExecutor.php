@@ -2,14 +2,6 @@
 
 namespace App;
 
-require_once "vendor/autoload.php";
-
-use App\DirectoryContents;
-use App\FileSystemManager;
-use App\SystemInfoManager;
-use App\DirectoryManager;
-use App\SessionManager;
-
 class CommandExecutor
 {
     public static function execute($input)

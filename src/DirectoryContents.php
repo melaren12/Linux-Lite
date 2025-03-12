@@ -2,8 +2,6 @@
 
 namespace App;
 
-require_once "vendor/autoload.php";
-
 class DirectoryContents
 {
     public static function contentsPermissions($dir)

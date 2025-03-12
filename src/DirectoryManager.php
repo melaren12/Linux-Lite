@@ -8,7 +8,7 @@ use App\SessionManager;
 
 class DirectoryManager
 {
-    public static function changeDirectory($file_name)
+    public static function changeDirectory($file_name) :string
     {
         $new_path = SessionManager::getCurrentDir() . '/' . $file_name;
         if ($new_path && is_dir($new_path)) {
@@ -25,7 +25,7 @@ class DirectoryManager
         return $_SESSION['current_dir'] = getcwd();
     }
 
-    public static function removeDirectory($dir)
+    public static function removeDirectory($dir) :string
     {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {

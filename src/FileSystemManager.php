@@ -2,13 +2,9 @@
 
 namespace App;
 
-require_once "vendor/autoload.php";
-
-use App\SessionManager;
-
 class FileSystemManager
 {
-    public static function listFiles()
+    public static function listFiles() :string
     {
         $files = array_diff(scandir(SessionManager::getCurrentDir()), ['.', '..']);
 
@@ -22,7 +18,7 @@ class FileSystemManager
         return file_exists($new_path) ? file_get_contents($new_path) : "File not found";
     }
 
-    public static function createFile($file_name)
+    public static function createFile($file_name) :string
     {
         $new_path = SessionManager::getCurrentDir() . '/' . $file_name;
         if (!file_exists($new_path)) {
@@ -34,7 +30,7 @@ class FileSystemManager
         return "File already exists!";
     }
 
-    public static function createDirectory($file_name)
+    public static function createDirectory($file_name) :string
     {
         $new_path = SessionManager::getCurrentDir() . '/' . $file_name;
         if (!file_exists($new_path)) {
@@ -46,7 +42,7 @@ class FileSystemManager
         }
     }
 
-    public static function copyFile($source, $destination)
+    public static function copyFile($source, $destination) :string
     {
         if (!file_exists($destination)) {
             $new_path = SessionManager::getCurrentDir() . '/' . $destination;
@@ -61,7 +57,7 @@ class FileSystemManager
         return "It is not file!";
     }
 
-    public static function renameFile($old_name, $new_name)
+    public static function renameFile($old_name, $new_name) :string
     {
         if (file_exists($old_name)) {
             rename($old_name, $new_name);
@@ -72,7 +68,7 @@ class FileSystemManager
         return "File not found";
     }
 
-    public static function writeFileContents($file_name, $data)
+    public static function writeFileContents($file_name, $data) :string
     {
         $new_path = SessionManager::getCurrentDir() . '/' . $file_name;
 
